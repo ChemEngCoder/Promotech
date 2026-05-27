@@ -82,6 +82,7 @@ if __name__ == "__main__":
         out_dir          = args.output_dir,
         test_sample_size = args.test_samples,
         data_type        = args.model,
+        step_size        = args.step_size #Added step size argument
       )
     elif args.predict_genome:
       # clear && python promotech.py -g -t 0.6 -m RF-HOT
