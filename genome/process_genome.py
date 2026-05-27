@@ -39,7 +39,7 @@ def genomeSlidingWindow(fasta_file_path, log_file=None, promoter_size=40, step_s
   
   print_fn("\n\n JOINING ALL CHROMS AND SEQS INTO A SINGLE FOR TETRA-NUCLEOTIDE SLIDING WINDOW".format(), log_file) 
   chrom    = ",".join(chroms)
-  genome   = "".join(genomes)
+  genome   = "".join(genomes).upper()
   # CLEANING UP TO SAVE MEMORY
   if chroms is not None:
     del chroms
