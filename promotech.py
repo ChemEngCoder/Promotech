@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
   parser.add_argument("-b"  , "--benchmark"        , help='Run Benchmark', action="store_true")
   parser.add_argument("-bm" , "--benchmark-model"  , help='Model to use during the benchmark. The options are: ["iPromoter2L"]', choices=["iPromoter2L"], default="iPromoter2L")
+  parser.add_argument("-ss", "--step-size",  help='Sliding window step size for --parse-genome. Default is 1.', type=int, default=1)
   # parser.add_argument( "-RT", "--retrain"  , help="Retrain a model. " , action="store_true"  )
 
   args = parser.parse_args()

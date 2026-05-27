@@ -131,6 +131,13 @@ def parseGenome40NTSequences(fasta_file_path, out_dir="RF-HOT", promoter_size=40
   print_fn("\n\t TIME ELAPSED FROM START (HOUR:MIN:SEC): {}".format( time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)) ) , log_file)
   print_fn("\n\n FILE SAVED SUCCESSFULLY AT: \n\t{}".format( inverse_strand_output_path ), log_file)
   
+  # Save step size from parsing run
+  step_size_output_path = os.path.join(out_dir, "STEP_SIZE.data")
+  print_fn("\n\n SAVING STEP SIZE TO BINARY FILE USING JOBLIB TO: {} ".format( inverse_strand_output_path ), log_file)
+  joblib.dump(step_size, step_size_output_path)
+  print_fn("\n\t TIME ELAPSED FROM START (HOUR:MIN:SEC): {}".format( time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)) ) , log_file)
+  print_fn("\n\n FILE SAVED SUCCESSFULLY AT: \n\t{}".format( step_size_output_path ), log_file)
+
   return X
     
 
@@ -150,7 +157,8 @@ def predictGenomeSequences(
   seqs_output_path      = os.path.join(input_dir, "SEQS.data" )  
   inv_seqs_output_path  = os.path.join(input_dir, "SEQS-INV.data" )  
   forward_strand_seqs_file= os.path.join(input_dir, "{}.data".format( model_type ) ) 
-  inverse_strand_seqs_file= os.path.join(input_dir, "{}-INV.data".format( model_type ) ) 
+  inverse_strand_seqs_file= os.path.join(input_dir, "{}-INV.data".format( model_type ) )
+  step_size_output_path = os.path.join(input_dir, "STEP_SIZE.data")  
   
   if not os.path.exists(out_dir)  :
     raise ValueError("FILE PATH {} DOES NOT EXISTS. PLEASE PARSE THE GENOME FILE FIRST.".format(out_dir))
@@ -164,6 +172,14 @@ def predictGenomeSequences(
     raise ValueError("FILE PATH {} DOES NOT EXISTS. PLEASE PARSE THE GENOME FILE FIRST.".format(seqs_output_path))
   if not os.path.exists(inv_seqs_output_path)  :
     raise ValueError("FILE PATH {} DOES NOT EXISTS. PLEASE PARSE THE GENOME FILE FIRST.".format(inv_seqs_output_path))
+  if not os.path.exists(step_size_output_path):
+    step_size = 1 
+    print_fn("\n\n LOADING STEP_SIZE DATA AT: {} FAILED. USING DEFAULT SIZE: {}".format(
+      step_size_output_path,
+      step_size
+      ), log_file)
+  else:
+    step_size = joblib.load(step_size_output_path)
   
   start_time        = time.time()
   
@@ -231,17 +247,18 @@ def predictGenomeSequences(
   
   df = pd.DataFrame(columns=['chrom', 'start', 'end', 'score', 'strand', 'sequence'])
   for i_s, s in enumerate( seqs ):
+    genomic_start = i_s * step_size          # <-- corrected 
     pred_score = y_pred[i_s]
     if pred_score > threshold:
       df = df.append({ 
-        'chrom': chrom, 'start': i_s, 'end': i_s+39, 
+        'chrom': chrom, 'start': genomic_start, 'end': genomic_start+39, 
         'score': np.round(pred_score, 5), 'strand': "+", 
         'sequence': seqs[i_s] 
       }, ignore_index=True)
     inv_pred_score = y_inv_pred[i_s]
     if inv_pred_score > threshold:
       df = df.append({ 
-        'chrom': chrom, 'start': i_s, 'end': i_s+39, 
+        'chrom': chrom, 'start': genomic_start, 'end': genomic_start+39, 
         'score': np.round(inv_pred_score, 5), 'strand': "-", 
         'sequence': inv_seqs[i_s] 
       }, ignore_index=True)
