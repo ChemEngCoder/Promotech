@@ -169,7 +169,7 @@ def predictGenomeSequences(
   
   model = None
   if model_type == "RF-HOT" or model_type == "RF-TETRA":
-    model_path = os.path.join("models", "{}.model".format(model_type))
+    model_path = os.path.join(dir_path, "../models", "{}.model".format(model_type))
     print_fn("\n\n LOADING MACHINE LEARNING MODEL AT: {} WITH SIZE: {:,.2f} MB".format( 
       model_path ,
       Path(model_path).stat().st_size  / 1000000
