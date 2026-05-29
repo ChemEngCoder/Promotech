@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtWidgets, uic
 from ui.GUI import Promotech_UI
 from genome.process_genome import parseGenome40NTSequences, predictGenomeSequences
+from genome.process_genome_multiple import parseMultipleGenome40NTSequences, predictMultipleGenomeSequences
 from sequences.process_sequences import predictSequences
 from benchmark.process_benchmark import run_benchmark
 
@@ -24,6 +25,7 @@ if __name__ == "__main__":
   parser.add_argument("-b"  , "--benchmark"        , help='Run Benchmark', action="store_true")
   parser.add_argument("-bm" , "--benchmark-model"  , help='Model to use during the benchmark. The options are: ["iPromoter2L"]', choices=["iPromoter2L"], default="iPromoter2L")
   parser.add_argument("-ss", "--step-size",  help='Sliding window step size for --parse-genome. Default is 1.', type=int, default=1)
+  parser.add_argument("-mu"  , "--multiple-sequences", help="Predict 40 nucleotides in multiple FASTA sequences.", action="store_true" )
   # parser.add_argument( "-RT", "--retrain"  , help="Retrain a model. " , action="store_true"  )
 
   args = parser.parse_args()
@@ -77,19 +79,36 @@ if __name__ == "__main__":
       if fasta_file_path is None:
         raise ValueError("Argument (--fasta, -F) is missing.")
       # clear && python promotech.py-pg -ts 50000 -f examples/genome/ECOLI_2.fasta
-      parseGenome40NTSequences(
-        fasta_file_path  = fasta_file_path[0], 
-        out_dir          = args.output_dir,
-        test_sample_size = args.test_samples,
-        data_type        = args.model,
-        step_size        = args.step_size #Added step size argument
-      )
+      if args.multiple_sequences:
+        parseMultipleGenome40NTSequences(
+          fasta_file_path  = fasta_file_path[0], 
+          out_dir          = args.output_dir,
+          test_sample_size = args.test_samples,
+          data_type        = args.model,
+          step_size        = args.step_size #Added step size argument
+        )
+      else:
+        parseGenome40NTSequences(
+          fasta_file_path  = fasta_file_path[0], 
+          out_dir          = args.output_dir,
+          test_sample_size = args.test_samples,
+          data_type        = args.model,
+          step_size        = args.step_size #Added step size argument
+        )
     elif args.predict_genome:
       # clear && python promotech.py -g -t 0.6 -m RF-HOT
-      predictGenomeSequences(
-        input_dir       = args.input_dir,
-        out_dir         = args.output_dir,
-        model_type      = args.model,
-        threshold       = args.threshold
-      )
+      if args.multiple_sequences:
+        predictMultipleGenomeSequences(
+          input_dir       = args.input_dir,
+          out_dir         = args.output_dir,
+          model_type      = args.model,
+          threshold       = args.threshold
+        )
+      else:
+        predictGenomeSequences(
+          input_dir       = args.input_dir,
+          out_dir         = args.output_dir,
+          model_type      = args.model,
+          threshold       = args.threshold
+        )
       
