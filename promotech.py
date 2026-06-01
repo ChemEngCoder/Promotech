@@ -80,6 +80,7 @@ if __name__ == "__main__":
         raise ValueError("Argument (--fasta, -F) is missing.")
       # clear && python promotech.py-pg -ts 50000 -f examples/genome/ECOLI_2.fasta
       if args.multiple_sequences:
+        print("LAUNCHING PROMOTECH PARSE GENOME MULTIPLE SEQUENCES")
         parseMultipleGenome40NTSequences(
           fasta_file_path  = fasta_file_path[0], 
           out_dir          = args.output_dir,
@@ -88,6 +89,7 @@ if __name__ == "__main__":
           step_size        = args.step_size #Added step size argument
         )
       else:
+        print("LAUNCHING PROMOTECH PARSE GENOME")
         parseGenome40NTSequences(
           fasta_file_path  = fasta_file_path[0], 
           out_dir          = args.output_dir,
@@ -98,6 +100,7 @@ if __name__ == "__main__":
     elif args.predict_genome:
       # clear && python promotech.py -g -t 0.6 -m RF-HOT
       if args.multiple_sequences:
+        print("LAUNCHING PROMOTECH PREDICT GENOME MULTIPLE SEQUENCES")
         predictMultipleGenomeSequences(
           input_dir       = args.input_dir,
           out_dir         = args.output_dir,
@@ -105,6 +108,7 @@ if __name__ == "__main__":
           threshold       = args.threshold
         )
       else:
+        print("LAUNCHING PROMOTECH PREDICT GENOME")
         predictGenomeSequences(
           input_dir       = args.input_dir,
           out_dir         = args.output_dir,
