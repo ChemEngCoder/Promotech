@@ -64,6 +64,7 @@ if __name__ == "__main__":
             fasta_file_path,
             args.test_samples,
     ))
+    print(args)
     if args.predict_sequences:
       if fasta_file_path is None:
         raise ValueError("Argument (--fasta, -F) is missing.")
