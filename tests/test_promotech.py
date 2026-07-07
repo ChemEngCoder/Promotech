@@ -74,7 +74,7 @@ def test_script_execution(tmp_path):
     ]
 
     # Execute the script
-    prom_predict_result = subprocess.run(prom_predict_cmd, capture_output=True, text=True)
+    prom_predict_result = subprocess.run(prom_predict_cmd, stdout=None, stderr=None)
 
     # Assertions for successful execution
     assert prom_predict_result.returncode == 0, f"Script failed with stderr: {prom_predict_result.stderr}"
