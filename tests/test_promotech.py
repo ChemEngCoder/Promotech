@@ -49,7 +49,8 @@ def test_script_execution(tmp_path):
     ]
 
     # Execute the script
-    prom_parse_result = subprocess.run(prom_parse_cmd, capture_output=True, text=True)
+    # Subprocess for Python 3.6.10
+    prom_parse_result = subprocess.run(prom_parse_cmd, stdout=None, stderr=None)
 
     # Assertions for successful execution
     assert prom_parse_result.returncode == 0, f"Script failed with stderr: {prom_parse_result.stderr}"
