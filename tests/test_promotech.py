@@ -36,7 +36,6 @@ def test_script_execution(tmp_path):
     # Validate contents of output files
     expected_path = os.path.join(root_dir, "tests", "data", "pseva234_predictions.csv")
 
-    perm_output_dir = os.path.join(os.sep, "app", "Promotech", "tests", "data")
     ### 2. Run promotech parse ###
 
     prom_parse_cmd = [
@@ -67,7 +66,7 @@ def test_script_execution(tmp_path):
     prom_predict_cmd = [
         "python", promotech_path, 
         "--input-dir", str(output_dir), 
-        "--output-dir", str(perm_output_dir), 
+        "--output-dir", str(output_dir), 
         "--model", "RF-HOT", 
         "--threshold", "0.5", 
         "--predict-genome",
